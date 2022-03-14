@@ -1,16 +1,11 @@
 An example module for the homework
 (hint 1: you can read this comment using: `homeworkmodule.__doc__`)
-
-
 func1
 param1
 param2
-
-    This function has two parameters
-    (hint 2: you can read this comment using: `homeworkmodule.func1.__doc__`)
-    (hint 3: you can read the annotations using: `homeworkmodule.func1.__annotations__`)
-
-
-func2()
-    This function has no parameters and a return value.
+This function has two parameters
+(hint 2: you can read this comment using: `homeworkmodule.func1.__doc__`)
+(hint 3: you can read the annotations using: `homeworkmodule.func1.__annotations__`)
+func2
+This function has no parameters and a return value.
 
