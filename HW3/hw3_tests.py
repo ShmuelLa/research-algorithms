@@ -115,5 +115,6 @@ class List_test(unittest.TestCase):
         self.assertRaises(SyntaxError, List, [[0, 1], [1, 2], [0, 1], [0, 1], [1], [0, 1]])
         self.assertRaises(SyntaxError, List, [[0, 1], [1, 2], [0, 1], [1], [1], [0, 1]])
 
+
 if __name__ == "__main__":
     unittest.main()

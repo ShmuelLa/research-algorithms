@@ -7,8 +7,6 @@ def lastcall(func):
     Checks it the same function is being called again with the same former input
     If the case is true than prints the value is being repeated.
     Else, runs the function and saves the input value
-    :param func:
-    :return:
     """
     def wrapper(*args):
         global last_val, last_func

@@ -1,6 +1,9 @@
 class List(list):
+    """
+    HW3 - EX3
+    """
 
-    def __init__(self, matrix: list) -> object:
+    def __init__(self, matrix: list):
         self.first_dimension_length = None
         self.second_dimension_length = None
         if not isinstance(matrix, list):
@@ -44,5 +47,4 @@ if __name__ == "__main__":
            [[1, 2, 3], [2, 3, 1]]]
     lst2 = [[[1, 2, 3], [2, 3]], [[1, 2, 3]]]  # raises error
     list1 = List(lst)
-    # list2 = List(lst2)
-    print(list1[0, 1,1])
+    print(list1[0, 1, 1])
