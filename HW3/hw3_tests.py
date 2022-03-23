@@ -86,6 +86,7 @@ class last_call_test(unittest.TestCase):
             square_num(3)
             self.assertTrue("9" in test_output.getvalue())
 
+
 class List_test(unittest.TestCase):
 
     def test_len(self):
@@ -114,6 +115,24 @@ class List_test(unittest.TestCase):
         self.assertRaises(SyntaxError, List, [[0, 1], [1]])
         self.assertRaises(SyntaxError, List, [[0, 1], [1, 2], [0, 1], [0, 1], [1], [0, 1]])
         self.assertRaises(SyntaxError, List, [[0, 1], [1, 2], [0, 1], [1], [1], [0, 1]])
+
+    def test_append(self):
+        lst = [[[1, 2, 3], [2, 3, 1]],
+               [[1, 2, 3], [3, 3, 1]]]
+        list1 = List(lst)
+        lst2 = [[[5, 5, 5], [5, 5, 5]],
+               [[5, 5, 5], [5, 5, 5]]]
+        list2 = List(lst2)
+        list1.append(list2)
+        test_lst = [[[1, 2, 3], [2, 3, 1]], [[1, 2, 3], [3, 3, 1]], [[[5, 5, 5], [5, 5, 5]], [[5, 5, 5], [5, 5, 5]]]]
+        self.assertEqual(list1, test_lst)
+
+    def test_remove(self):
+        lst = [[[1, 2, 3], [2, 3, 1]],
+               [[1, 2, 3], [3, 3, 1]]]
+        list1 = List(lst)
+        list1.remove([[1, 2, 3], [2, 3, 1]])
+        self.assertEqual(list1, [[[1, 2, 3], [3, 3, 1]]])
 
 
 if __name__ == "__main__":
