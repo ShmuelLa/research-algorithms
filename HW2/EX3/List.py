@@ -1,6 +1,6 @@
 class List(list):
     """
-    HW3 - EX3
+    HW2 - EX3
 
     Multidimensional list object, changed core elements to fit the list.
     Most of the methods used are based on the super class.

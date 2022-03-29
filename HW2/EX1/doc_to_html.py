@@ -2,7 +2,7 @@ import sys
 import importlib
 
 """
-    EX1 of HW3
+    EX1 of HW2
     Receives input file of a python module and an output file for the desired HTML file 
     from the users commandline and extract the documentation of the module into an HTML
     include minimal file error handling
