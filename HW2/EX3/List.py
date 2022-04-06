@@ -69,7 +69,7 @@ class List(list):
 
 if __name__ == "__main__":
     """
-    Used for realtime development printing, actual tests are in hw3_tests.py module   
+    Used for realtime development printing, actual tests are in hw2_tests.py module   
     """
     lst = [[[1, 2, 3], [2, 3, 1]],
            [[1, 2, 3], [2, 3, 1]]]

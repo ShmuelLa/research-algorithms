@@ -2,8 +2,8 @@ import unittest
 import os
 from io import StringIO
 from unittest.mock import patch
-from HW3.EX2.last_call import square_num, add_two
-from HW3.EX3.List import List
+from HW2.EX2.last_call import square_num, add_two
+from HW2.EX3.List import List
 
 
 def ex1_remove_all_html_files():
