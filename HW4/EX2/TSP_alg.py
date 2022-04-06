@@ -98,8 +98,3 @@ if __name__ == "__main__":
                 "ARIEL": [10, 0, 50, 70],
                 "KFAR-SABA": [330, 340, 350, 0],
                 "KARMIEL": [110, 150, 0, 240]}
-    print(paths(algorithm=tsp, graph=g1, start=2, path_flag=False))
-    print(paths(algorithm=tsp, graph=g1, start=2, path_flag=True))
-    print(paths(algorithm=floyd_warshall, graph=g1, start=None, path_flag=None))
-    print(paths(algorithm=tsp, graph=names_g1, start="TLV", path_flag=False))
-    print(paths(algorithm=tsp, graph=names_g1, start="TLV", path_flag=True))
