@@ -35,10 +35,18 @@ class bs_generator_tests(unittest.TestCase):
     def test_bs_results(self):
         lst_tst = [1, 2, 3, 4, 5]
         result_tst = [subset for subset in bounded_subset(lst_tst, 2)]
+        # for i in result_tst:
+        #     print(i, end=" ")
         self.assertTrue([1] in result_tst)
         self.assertTrue([2] in result_tst)
         self.assertTrue([3] not in result_tst)
         lst_tst2 = [1, 2, 3, 4]
+        result_tst2 = [subset for subset in bounded_subset(lst_tst2, 4)]
+        self.assertTrue(check_if_contains_list([1, 3], result_tst2))
+        self.assertTrue(check_if_contains_list([3], result_tst2))
+        for i in range(5, 8):
+            self.assertFalse(check_if_contains_list([i], result_tst2))
+        lst_tst2 = [4, 3, 2, 1]
         result_tst2 = [subset for subset in bounded_subset(lst_tst2, 4)]
         self.assertTrue(check_if_contains_list([1, 3], result_tst2))
         self.assertTrue(check_if_contains_list([3], result_tst2))

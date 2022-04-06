@@ -7,17 +7,20 @@ def bounded_subset(lst: list, num: int):
 
     if not isinstance(lst, list) or not isinstance(num, int):
         raise ValueError("This generator accepts only (list, int) input")
+    # Removes numbers that are too big before the heavy iteration to improve complexity
+    lst.sort()
     for index in lst:
         if index > num:
             lst.remove(index)
-    lst.sort()
     result = [[]]
     for index in lst:
         tmp_set = [subset + [index] for subset in result]
-        result.extend(tmp_set)
+        # We will add only the relevant subsets that that has the corresponding sum
+        result.extend(subs for subs in tmp_set if sum(subs) <= num)
+    # After we finish we need to iterate ont more time over the result in order to yield it
+    # This part is crucial because we are relying on the list extend/append feature for the creation
     for subset in result:
-        if sum(subset) <= num:
-            yield subset
+        yield subset
 
 
 if __name__ == "__main__":
