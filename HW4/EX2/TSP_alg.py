@@ -14,13 +14,8 @@ https://content.iospress.com/articles/fundamenta-informaticae/fi1760#:~:text=Abs
 from typing import Callable, Any
 from itertools import permutations
 
-names_g1 = {"TLV" : [0, 20, 40, 60],
-            "ARIEL": [10, 0, 50, 70],
-            "KFAR-SABA": [330, 340, 350, 0],
-            "KARMIEL": [110, 150, 0, 240]}
 
-
-def tsp_min_path_val(navigation_graph, start):
+def tsp(navigation_graph: list, start: int, path_flag: bool) -> float:
     """
     Solves the TSP shortest distance problem in the brute force algorithm
     We will calculate all possible permutations for a path with itertools permutations
@@ -28,6 +23,7 @@ def tsp_min_path_val(navigation_graph, start):
 
     The main core of this algorithm is to calculate all possible Hamiltonian Cycles possible on the graph
 
+    :param path_flag: A flag to return the full path if True or just the distance if False
     :param navigation_graph: A two dimensional matrix representing the possible nodes and paths the agent needs to pass
     The graph should be a distance matrix graph as described here:
     https://en.wikipedia.org/wiki/Distance_matrix#:~:text=In%20general%2C%20a%20distance%20matrix,paths%20joining%20the%20two%20nodes.
@@ -35,7 +31,6 @@ def tsp_min_path_val(navigation_graph, start):
     :param start: The index of the starting point for the agent, has to be a point on the graph
     :return: The shortest path value
     """
-
     possible_starting_nodes = []
     for node in range(len(navigation_graph)):
         if node != start:
@@ -48,80 +43,44 @@ def tsp_min_path_val(navigation_graph, start):
             current_distance += navigation_graph[tmp][permutation_node]
             tmp = permutation_node
         current_distance += navigation_graph[tmp][start]
-        result = min(result, current_distance)
+        if path_flag:
+            result = (start,) + permutation
+        else:
+            result = min(result, current_distance)
     return result
 
 
-def tsp_min_path(navigation_graph, start):
-    """
-    Compared to the former function, this one returns the full Ham-Path
+def floyd_warshall(graph: list, start: int):
+    paths = graph
+    for k in range(len(graph)):
+        for i in range(len(graph)):
+            for j in range(len(graph)):
+                paths[i][j] = min(paths[i][j], paths[i][k]+paths[k][j])
+    return paths
 
-    :param navigation_graph: A two dimensional matrix representing the possible nodes and paths the agent needs to pass
-    The graph should be a distance matrix graph as described here:
-    https://en.wikipedia.org/wiki/Distance_matrix#:~:text=In%20general%2C%20a%20distance%20matrix,paths%20joining%20the%20two%20nodes.
 
-    :param start: The index of the starting point for the agent, has to be a point on the graph
-    :return: The shortest path by nodes - List
-    """
-
-    possible_starting_nodes = []
-    for node in range(len(navigation_graph)):
-        if node != start:
-            possible_starting_nodes.append(node)
-    distance_result = float('inf')
-    for permutation in permutations(possible_starting_nodes):
-        current_distance = 0
-        tmp = start
-        for permutation_node in permutation:
-            current_distance += navigation_graph[tmp][permutation_node]
-            tmp = permutation_node
-        current_distance += navigation_graph[tmp][start]
-        distance_result = min(distance_result, current_distance)
-        result = (start,) + permutation
-    return result
+def paths(algorithm: Callable, graph: list, start: int, path_flag: bool):
+    return algorithm(graph, start, path_flag)
 
 
 if __name__ == "__main__":
     g1 = [[0, 2, 4, 6], [1, 0, 5, 7], [11, 15, 0, 24], [33, 34, 35, 0]]
-    print(tsp_min_path_val(g1, 0))
-    print(tsp_min_path_val(g1, 2))
-    print(tsp_min_path_val(g1, 3))
-    print(tsp_min_path(g1, 0))
-    print(tsp_min_path(g1, 2))
-    print(tsp_min_path(g1, 3))
+    names_g1 = {"TLV": [0, 20, 40, 60],
+                "ARIEL": [10, 0, 50, 70],
+                "KFAR-SABA": [330, 340, 350, 0],
+                "KARMIEL": [110, 150, 0, 240]}
+    print(paths(algorithm=tsp, graph=g1, start=2, path_flag=False))
+    print(paths(algorithm=tsp, graph=g1, start=2, path_flag=True))
+    # print(tsp_min_dist(g1, 2))
+    # print(tsp_min_dist(g1, 3))
+    # print(tsp_min_path(g1, 0))
+    # print(tsp_min_path(g1, 2))
+    # print(tsp_min_path(g1, 3))
+    # print(floyd_warshall(g1, 0))
 
 
 
-# from bins import *
-# import outputtypes as out
-#
-#
 # def partition(algorithm: Callable, numbins: int, items: list, outputtype: out.OutputType=out.Partition):
-#     """
-#     >>> partition(algorithm=roundrobin, numbins=2, items=[1,2,3,3,5,9,9])
-#     [[9, 5, 3, 1], [9, 3, 2]]
-#     >>> partition(algorithm=roundrobin, numbins=3, items=[1,2,3,3,5,9,9], outputtype=out.Partition)
-#     [[9, 3, 1], [9, 3], [5, 2]]
-#     >>> partition(algorithm=roundrobin, numbins=3, items=[1,2,3,3,5,9,9], outputtype=out.Sums)
-#     [13, 12, 7]
-#     >>> partition(algorithm=roundrobin, numbins=3, items=[1,2,3,3,5,9,9], outputtype=out.LargestSum)
-#     13
-#
-#     >>> partition(algorithm=roundrobin, numbins=2, items={"a":1, "b":2, "c":3, "d":3, "e":5, "f":9, "g":9})
-#     [['f', 'e', 'd', 'a'], ['g', 'c', 'b']]
-#     >>> partition(algorithm=roundrobin, numbins=3, items={"a":1, "b":2, "c":3, "d":3, "e":5, "f":9, "g":9})
-#     [['f', 'c', 'a'], ['g', 'd'], ['e', 'b']]
-#
-#     >>> partition(algorithm=greedy, numbins=2, items=[1,2,3,3,5,9,9])
-#     [[9, 5, 2], [9, 3, 3, 1]]
-#     >>> partition(algorithm=greedy, numbins=3, items=[1,2,3,3,5,9,9])
-#     [[9, 2], [9, 1], [5, 3, 3]]
-#
-#     >>> partition(algorithm=greedy, numbins=2, items={"a":1, "b":2, "c":3, "d":3, "e":5, "f":9, "g":9})
-#     [['f', 'e', 'b'], ['g', 'c', 'd', 'a']]
-#     >>> partition(algorithm=greedy, numbins=3, items={"a":1, "b":2, "c":3, "d":3, "e":5, "f":9, "g":9})
-#     [['f', 'b'], ['g', 'a'], ['e', 'c', 'd']]
-#     """
 #     if isinstance(items, dict):  # items is a dict mapping an item to its value.
 #         item_names = items.keys()
 #         valueof = items.__getitem__
