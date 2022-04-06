@@ -1,4 +1,5 @@
 from HW4.EX1.bs_generator import bounded_subset
+from HW4.EX2.TSP_alg import paths, floyd_warshall, tsp
 import unittest
 
 
@@ -52,6 +53,31 @@ class bs_generator_tests(unittest.TestCase):
         self.assertTrue(check_if_contains_list([3], result_tst2))
         for i in range(5, 8):
             self.assertFalse(check_if_contains_list([i], result_tst2))
+
+
+class tsp_fw_test(unittest.TestCase):
+    """
+    EX2 Tests
+    """
+
+    def test_numeric_input(self):
+        g1 = [[0, 2, 4, 6], [1, 0, 5, 7], [11, 15, 0, 24], [33, 34, 35, 0]]
+        self.assertEqual(55, paths(algorithm=tsp, graph=g1, start=2, path_flag=False))
+        self.assertEqual((2, 3, 1, 0), paths(algorithm=tsp, graph=g1, start=2, path_flag=True))
+
+    def test_string_input(self):
+        names_g1 = {"TLV": [0, 20, 40, 60],
+                    "ARIEL": [10, 0, 50, 70],
+                    "KFAR-SABA": [330, 340, 350, 0],
+                    "KARMIEL": [110, 150, 0, 240]}
+        self.assertEqual(180, paths(algorithm=tsp, graph=names_g1, start="TLV", path_flag=False))
+        self.assertEqual(('TLV', 'KARMIEL', 'KFAR-SABA', 'ARIEL'),
+                         paths(algorithm=tsp, graph=names_g1, start="TLV", path_flag=True))
+
+    def test_floyd_warshall(self):
+        g1 = [[0, 2, 4, 6], [1, 0, 5, 7], [11, 15, 0, 24], [33, 34, 35, 0]]
+        self.assertEqual([[0, 2, 4, 6], [1, 0, 5, 7], [11, 13, 0, 17], [33, 34, 35, 0]],
+                         paths(algorithm=floyd_warshall, graph=g1, start=None, path_flag=None))
 
 
 if __name__ == "__main__":

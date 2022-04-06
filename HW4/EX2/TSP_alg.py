@@ -11,11 +11,25 @@ https://www.baeldung.com/cs/tsp-dynamic-programming#:~:text=Dynamic%20Programmin
 https://content.iospress.com/articles/fundamenta-informaticae/fi1760#:~:text=Abstract,(i.e.%2C%20Hamiltonian%20cycles).
 """
 
-from typing import Callable, Any
+from typing import Callable
 from itertools import permutations
 
 
-def tsp(navigation_graph: list, start: int, path_flag: bool) -> float:
+def create_city_index_list(graph: dict, start: str) -> tuple:
+    count = 0
+    start_index = 0
+    city_index = {}
+    index_list = []
+    for k, v in graph.items():
+        if k == start_index:
+            start_index = count
+        city_index[count] = k
+        count += 1
+        index_list.append(v)
+    return start_index, index_list, city_index
+
+
+def tsp(navigation_graph: [list, dict], start: int, path_flag: bool) -> float:
     """
     Solves the TSP shortest distance problem in the brute force algorithm
     We will calculate all possible permutations for a path with itertools permutations
@@ -32,6 +46,11 @@ def tsp(navigation_graph: list, start: int, path_flag: bool) -> float:
     :return: The shortest path value
     """
     possible_starting_nodes = []
+    city_index_result = None
+    if isinstance(navigation_graph, dict):
+        city_index_result = create_city_index_list(navigation_graph, start)
+        start = city_index_result[0]
+        navigation_graph = city_index_result[1]
     for node in range(len(navigation_graph)):
         if node != start:
             possible_starting_nodes.append(node)
@@ -43,24 +62,34 @@ def tsp(navigation_graph: list, start: int, path_flag: bool) -> float:
             current_distance += navigation_graph[tmp][permutation_node]
             tmp = permutation_node
         current_distance += navigation_graph[tmp][start]
-        if path_flag:
+        if path_flag and city_index_result is not None:
+            result = (city_index_result[2][start],)
+            for permutation_index in permutation:
+                result += (city_index_result[2][permutation_index], )
+        elif path_flag:
             result = (start,) + permutation
         else:
             result = min(result, current_distance)
     return result
 
 
-def floyd_warshall(graph: list, start: int):
-    paths = graph
+def floyd_warshall(graph: list):
+    """"
+    Floyd warshalls algorithm that returns all possible shortests paths on a graph
+    """
+    path_matrix = graph
     for k in range(len(graph)):
         for i in range(len(graph)):
             for j in range(len(graph)):
-                paths[i][j] = min(paths[i][j], paths[i][k]+paths[k][j])
-    return paths
+                path_matrix[i][j] = min(path_matrix[i][j], path_matrix[i][k]+path_matrix[k][j])
+    return path_matrix
 
 
-def paths(algorithm: Callable, graph: list, start: int, path_flag: bool):
-    return algorithm(graph, start, path_flag)
+def paths(algorithm: Callable, graph: list, start: [int, None], path_flag: [bool, None]):
+    if start is None or path_flag is None:
+        return algorithm(graph)
+    else:
+        return algorithm(graph, start, path_flag)
 
 
 if __name__ == "__main__":
@@ -71,56 +100,6 @@ if __name__ == "__main__":
                 "KARMIEL": [110, 150, 0, 240]}
     print(paths(algorithm=tsp, graph=g1, start=2, path_flag=False))
     print(paths(algorithm=tsp, graph=g1, start=2, path_flag=True))
-    # print(tsp_min_dist(g1, 2))
-    # print(tsp_min_dist(g1, 3))
-    # print(tsp_min_path(g1, 0))
-    # print(tsp_min_path(g1, 2))
-    # print(tsp_min_path(g1, 3))
-    # print(floyd_warshall(g1, 0))
-
-
-
-# def partition(algorithm: Callable, numbins: int, items: list, outputtype: out.OutputType=out.Partition):
-#     if isinstance(items, dict):  # items is a dict mapping an item to its value.
-#         item_names = items.keys()
-#         valueof = items.__getitem__
-#     else:  # items is a list
-#         item_names = items
-#         valueof = lambda item: item
-#     bins = outputtype.create_empty_bins(numbins)
-#     bins.set_valueof(valueof)
-#     algorithm(bins, item_names, valueof)
-#     return outputtype.extract_output_from_bins(bins)
-#
-#
-# def roundrobin(bins: Bins, item_names: list, valueof: Callable[[Any], float] = lambda x:x):
-#     """
-#     Partition the given items using the round-robin algorithm.
-#     >>> roundrobin(BinsKeepingContents(2), item_names=[1,2,3,3,5,9,9]).bins
-#     [[9, 5, 3, 1], [9, 3, 2]]
-#     >>> roundrobin(BinsKeepingContents(3), item_names=[1,2,3,3,5,9,9]).bins
-#     [[9, 3, 1], [9, 3], [5, 2]]
-#     """
-#     ibin = 0
-#     for item in sorted(item_names, key=valueof, reverse=True):
-#         bins.add_item_to_bin(item, ibin)
-#         ibin = (ibin+1) % bins.num
-#     return bins
-#
-#
-# def greedy(bins: Bins, item_names: list, valueof: Callable[[Any], float] = lambda x:x):
-#     """
-#     Partition the given items using the greedy number partitioning algorithm.
-#
-#     >>> greedy(BinsKeepingContents(2), item_names=[1,2,3,3,5,9,9]).bins
-#     [[9, 5, 2], [9, 3, 3, 1]]
-#     >>> greedy(BinsKeepingContents(3), item_names=[1,2,3,3,5,9,9]).bins
-#     [[9, 2], [9, 1], [5, 3, 3]]
-#     """
-#     for item in sorted(item_names, key=valueof, reverse=True):
-#         index_of_least_full_bin = min(range(bins.num), key=lambda i: bins.sums[i])
-#         bins.add_item_to_bin(item, index_of_least_full_bin)
-#     return bins
-
-
-
+    print(paths(algorithm=floyd_warshall, graph=g1, start=None, path_flag=None))
+    print(paths(algorithm=tsp, graph=names_g1, start="TLV", path_flag=False))
+    print(paths(algorithm=tsp, graph=names_g1, start="TLV", path_flag=True))
