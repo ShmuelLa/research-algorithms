@@ -1,4 +1,10 @@
 def bounded_subset(lst: list, num: int):
+    """"
+    A generator that receives a list of numbers and an integers
+    Returns an iterator of all the subsets of the list which
+    are at least the sum of the received number
+    """
+
     if not isinstance(lst, list) or not isinstance(num, int):
         raise ValueError("This generator accepts only (list, int) input")
     for index in lst:
