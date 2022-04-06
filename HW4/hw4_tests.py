@@ -76,8 +76,8 @@ class tsp_fw_test(unittest.TestCase):
 
     def test_floyd_warshall(self):
         g1 = [[0, 2, 4, 6], [1, 0, 5, 7], [11, 15, 0, 24], [33, 34, 35, 0]]
-        self.assertEqual([[0, 2, 4, 6], [1, 0, 5, 7], [11, 13, 0, 17], [33, 34, 35, 0]],
-                         paths(algorithm=floyd_warshall, graph=g1, start=None, path_flag=None))
+        self.assertEqual(7, paths(algorithm=floyd_warshall, graph=g1, start=(1, 3), path_flag=False))
+        self.assertEqual([1, 1, 7], paths(algorithm=floyd_warshall, graph=g1, start=(1, 3), path_flag=True))
 
 
 if __name__ == "__main__":

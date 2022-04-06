@@ -73,7 +73,7 @@ def tsp(navigation_graph: [list, dict], start: int, path_flag: bool) -> float:
     return result
 
 
-def floyd_warshall(graph: list):
+def floyd_warshall(graph: list, nodes: tuple, path_flag: bool):
     """"
     Floyd warshalls algorithm that returns all possible shortests paths on a graph
     """
@@ -82,12 +82,26 @@ def floyd_warshall(graph: list):
         for i in range(len(graph)):
             for j in range(len(graph)):
                 path_matrix[i][j] = min(path_matrix[i][j], path_matrix[i][k]+path_matrix[k][j])
-    return path_matrix
+    if path_flag:
+        result = []
+        if path_matrix[nodes[0]][nodes[1]] == float('inf'):
+            return result
+        current = nodes[0]
+        for i in range(nodes[0], nodes[1]):
+            next_node = path_matrix[current][nodes[1]]
+            if next_node == -1:
+                return None
+            result.append(current)
+        if path_matrix[current][nodes[1]] == -1:
+            return None
+        result.append(path_matrix[current][nodes[1]])
+        return result
+    return path_matrix[nodes[0]][nodes[1]]
 
 
 def paths(algorithm: Callable, graph: list, start: [int, None], path_flag: [bool, None]):
-    if start is None or path_flag is None:
-        return algorithm(graph)
+    if isinstance(start, tuple):
+        return algorithm(graph, start, path_flag)
     else:
         return algorithm(graph, start, path_flag)
 
