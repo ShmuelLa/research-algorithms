@@ -14,8 +14,13 @@ https://content.iospress.com/articles/fundamenta-informaticae/fi1760#:~:text=Abs
 from typing import Callable, Any
 from itertools import permutations
 
+names_g1 = {"TLV" : [0, 20, 40, 60],
+            "ARIEL": [10, 0, 50, 70],
+            "KFAR-SABA": [330, 340, 350, 0],
+            "KARMIEL": [110, 150, 0, 240]}
 
-def tsp_min_path(navigation_graph, start):
+
+def tsp_min_path_val(navigation_graph, start):
     """
     Solves the TSP shortest distance problem in the brute force algorithm
     We will calculate all possible permutations for a path with itertools permutations
@@ -47,8 +52,40 @@ def tsp_min_path(navigation_graph, start):
     return result
 
 
+def tsp_min_path(navigation_graph, start):
+    """
+    Compared to the former function, this one returns the full Ham-Path
+
+    :param navigation_graph: A two dimensional matrix representing the possible nodes and paths the agent needs to pass
+    The graph should be a distance matrix graph as described here:
+    https://en.wikipedia.org/wiki/Distance_matrix#:~:text=In%20general%2C%20a%20distance%20matrix,paths%20joining%20the%20two%20nodes.
+
+    :param start: The index of the starting point for the agent, has to be a point on the graph
+    :return: The shortest path by nodes - List
+    """
+
+    possible_starting_nodes = []
+    for node in range(len(navigation_graph)):
+        if node != start:
+            possible_starting_nodes.append(node)
+    distance_result = float('inf')
+    for permutation in permutations(possible_starting_nodes):
+        current_distance = 0
+        tmp = start
+        for permutation_node in permutation:
+            current_distance += navigation_graph[tmp][permutation_node]
+            tmp = permutation_node
+        current_distance += navigation_graph[tmp][start]
+        distance_result = min(distance_result, current_distance)
+        result = (start,) + permutation
+    return result
+
+
 if __name__ == "__main__":
     g1 = [[0, 2, 4, 6], [1, 0, 5, 7], [11, 15, 0, 24], [33, 34, 35, 0]]
+    print(tsp_min_path_val(g1, 0))
+    print(tsp_min_path_val(g1, 2))
+    print(tsp_min_path_val(g1, 3))
     print(tsp_min_path(g1, 0))
     print(tsp_min_path(g1, 2))
     print(tsp_min_path(g1, 3))
