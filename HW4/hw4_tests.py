@@ -25,15 +25,15 @@ class bs_generator_tests(unittest.TestCase):
     """
 
     def test_wrong_input(self):
-        tuple_t = (2, 1, 2, 3, 4)
-        # self.assertRaises(ValueError, bounded_subset, tuple_t, 's')
-        try:
-            for i in bounded_subset(tuple_t, 2):
-                print(i, end=" ")
-        except ValueError:
-            self.assertEqual(True,True)
-        else:
-            self.assertEqual(True, False)
+        # tuple_t = (2, 1, 2, 3, 4)
+        # # self.assertRaises(ValueError, bounded_subset, tuple_t, 's')
+        # try:
+        #     for i in bounded_subset(tuple_t, 2):
+        #         print(i, end=" ")
+        # except ValueError:
+        #     self.assertEqual(True,True)
+        # else:
+        #     self.assertEqual(True, False)
 
     def test_bs_results(self):
         lst_tst = [1, 2, 3, 4, 5]
