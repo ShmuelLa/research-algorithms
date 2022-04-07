@@ -15,6 +15,12 @@ from typing import Callable
 from itertools import permutations
 
 
+g1 = [[0, 2, 4, 6], [1, 0, 5, 7], [11, 15, 0, 24], [33, 34, 35, 0]]
+g2 = [[0, 1000, 4, 6], [1000, 0, 5, 7], [11, 15, 0, 24], [33, 34, 35, 0]]
+negative_graph = [[0, -10, -15, -20], [-10, 0, -35, -25], [-15, -35, 0, -30], [-20, -25, -30, 0]]
+names_g1 = {"TLV": [0, 20, 40, 60], "ARIEL": [10, 0, 50, 70], "KFAR-SABA": [330, 340, 350, 0], "KARMIEL": [110, 150, 0, 240]}
+
+
 def create_city_index_list(graph: dict, start: str) -> tuple:
     count = 0
     start_index = 0
@@ -29,7 +35,7 @@ def create_city_index_list(graph: dict, start: str) -> tuple:
     return start_index, index_list, city_index
 
 
-def tsp(navigation_graph: [list, dict], start: int, path_flag: bool) -> float:
+def tsp(navigation_graph: [list, dict], start: [int, str], path_flag: bool) -> float:
     """
     Solves the TSP shortest distance problem in the brute force algorithm
     We will calculate all possible permutations for a path with itertools permutations
@@ -44,6 +50,15 @@ def tsp(navigation_graph: [list, dict], start: int, path_flag: bool) -> float:
 
     :param start: The index of the starting point for the agent, has to be a point on the graph
     :return: The shortest path value
+
+    >>> paths(algorithm=tsp, graph=g1, start=2, path_flag=False)
+    55
+    >>> paths(algorithm=tsp, graph=g1, start=2, path_flag=True)
+    (2, 3, 1, 0)
+    >>> paths(algorithm=tsp, graph=names_g1, start="TLV", path_flag=False)
+    180
+    >>> paths(algorithm=tsp, graph=names_g1, start="TLV", path_flag=True)
+    ('TLV', 'KARMIEL', 'KFAR-SABA', 'ARIEL')
     """
     possible_starting_nodes = []
     city_index_result = None
@@ -76,6 +91,29 @@ def tsp(navigation_graph: [list, dict], start: int, path_flag: bool) -> float:
 def floyd_warshall(graph: list, nodes: tuple, path_flag: bool):
     """"
     Floyd warshalls algorithm that returns all possible shortests paths on a graph
+
+
+    >>> paths(algorithm=floyd_warshall, graph=negative_graph, start=(1, 2), path_flag=False)
+    -815
+    >>> paths(algorithm=floyd_warshall, graph=g1, start=(1, 3), path_flag=False)
+    7
+    >>> paths(algorithm=floyd_warshall, graph=g1, start=(1, 2), path_flag=False)
+    5
+    >>> paths(algorithm=floyd_warshall, graph=g1, start=(1, 1), path_flag=False)
+    0
+    >>> paths(algorithm=floyd_warshall, graph=g1, start=(3, 1), path_flag=False)
+    34
+    >>> paths(algorithm=floyd_warshall, graph=g1, start=(2, 1), path_flag=False)
+    13
+    >>> paths(algorithm=floyd_warshall, graph=g2, start=(2, 1), path_flag=False)
+    15
+    >>> paths(algorithm=floyd_warshall, graph=g2, start=(1, 2), path_flag=False)
+    5
+    >>> paths(algorithm=floyd_warshall, graph=g2, start=(1, 2), path_flag=True)
+    [1, 2]
+    >>> paths(algorithm=floyd_warshall, graph=g2, start=(1, 3), path_flag=True)
+    [1, 2, 3]
+
     """
     path_matrix = graph
     for k in range(len(graph)):
@@ -87,14 +125,15 @@ def floyd_warshall(graph: list, nodes: tuple, path_flag: bool):
         if path_matrix[nodes[0]][nodes[1]] == float('inf'):
             return result
         current = nodes[0]
-        for i in range(nodes[0], nodes[1]):
+        for i in range(nodes[0] + 1, nodes[1] + 1):
             next_node = path_matrix[current][nodes[1]]
             if next_node == -1:
                 return None
             result.append(current)
+            current = i
         if path_matrix[current][nodes[1]] == -1:
             return None
-        result.append(path_matrix[current][nodes[1]])
+        result.append(nodes[1])
         return result
     return path_matrix[nodes[0]][nodes[1]]
 
@@ -107,8 +146,7 @@ def paths(algorithm: Callable, graph: list, start: [int, None], path_flag: [bool
 
 
 if __name__ == "__main__":
-    g1 = [[0, 2, 4, 6], [1, 0, 5, 7], [11, 15, 0, 24], [33, 34, 35, 0]]
-    names_g1 = {"TLV": [0, 20, 40, 60],
-                "ARIEL": [10, 0, 50, 70],
-                "KFAR-SABA": [330, 340, 350, 0],
-                "KARMIEL": [110, 150, 0, 240]}
+    import doctest
+
+    (failures, tests) = doctest.testmod(report=True)
+    print("{} failures, {} tests".format(failures, tests))
