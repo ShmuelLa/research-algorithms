@@ -24,7 +24,7 @@ class bs_generator_tests(unittest.TestCase):
     Tests for EX1 - bounded subset generator
     """
 
-    def test_wrong_input(self):
+    # def test_wrong_input(self):
         # tuple_t = (2, 1, 2, 3, 4)
         # # self.assertRaises(ValueError, bounded_subset, tuple_t, 's')
         # try:

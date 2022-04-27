@@ -93,8 +93,6 @@ def floyd_warshall(graph: list, nodes: tuple, path_flag: bool):
     Floyd warshalls algorithm that returns all possible shortests paths on a graph
 
 
-    >>> paths(algorithm=floyd_warshall, graph=negative_graph, start=(1, 2), path_flag=False)
-    -815
     >>> paths(algorithm=floyd_warshall, graph=g1, start=(1, 3), path_flag=False)
     7
     >>> paths(algorithm=floyd_warshall, graph=g1, start=(1, 2), path_flag=False)
