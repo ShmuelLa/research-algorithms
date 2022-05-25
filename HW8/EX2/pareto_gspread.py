@@ -20,6 +20,8 @@ class GSpreadParetoImprovement:
         Solved the problem presented on the input sheet
         by using all the relevant class methods
 
+        :param sheet_name: The sheet name with the desired scenario to run
+        :return: Printout the resulting allocation
 
         >>> gpi = GSpreadParetoImprovement()
         >>> gpi.solve('Input2')
@@ -31,6 +33,12 @@ class GSpreadParetoImprovement:
         >>> gpi.solve('Input3')
         Received and uploaded result:
         agent1's bundle: {item 1,item 2,item 3 ,item 4},  value: -90.0
+        <BLANKLINE>
+
+        >>> gpi = GSpreadParetoImprovement()
+        >>> gpi.solve('Input4')
+        Received and uploaded result:
+        agent1's bundle: {item 1,item 2,item 3 ,item 4},  value: -170.0
         <BLANKLINE>
         """
         fr_allocation, items = self.get_input(sheet_name)
@@ -46,6 +54,7 @@ class GSpreadParetoImprovement:
         the different object for the ParetoImprovement and FractionalAlLocation
         settings
 
+        :param sheet_name: The sheet name with the desired scenario to run
         :return: FractionalAllocation of the input sheet content and an item set
         """
         i_sheet = self.spreadsheet.worksheet(sheet_name)

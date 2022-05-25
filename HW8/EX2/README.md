@@ -37,3 +37,15 @@ even if negative
 
 #### Output
 ![alt text](images/input_3/output.jpg)
+
+------
+
+## Example 4
+Single agent with negative utilities should get all
+even if negative
+
+#### Input
+![alt text](images/input_4/input.jpg)
+
+#### Output
+![alt text](images/input_4/output.jpg)
