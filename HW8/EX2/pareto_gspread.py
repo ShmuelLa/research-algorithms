@@ -15,15 +15,31 @@ class GSpreadParetoImprovement:
         self.account = account = gspread.service_account("creds.json")
         self.spreadsheet = account.open_by_key('1BdSeJ0uOmnJijWa460BmgyjAKBpVFiQ-6QONHN3Ip4U')
 
-    def solve(self):
+    def solve(self, sheet_name):
         """
         Solved the problem presented on the input sheet
         by using all the relevant class methods
-        """
-        fr_allocation, items = self.get_input()
-        self.post_output(str(ParetoImprovement(fr_allocation, items).find_pareto_improvement()))
 
-    def get_input(self) -> tuple[FractionalAllocation, set]:
+
+        >>> gpi = GSpreadParetoImprovement()
+        >>> gpi.solve('Input2')
+        Received and uploaded result:
+        agent1's bundle: {item 1,item 2,item 3 ,item 4},  value: 28.0
+        <BLANKLINE>
+
+        >>> gpi = GSpreadParetoImprovement()
+        >>> gpi.solve('Input3')
+        Received and uploaded result:
+        agent1's bundle: {item 1,item 2,item 3 ,item 4},  value: -90.0
+        <BLANKLINE>
+        """
+        fr_allocation, items = self.get_input(sheet_name)
+        result_str = str(ParetoImprovement(fr_allocation, items).find_pareto_improvement())
+        print("Received and uploaded result:")
+        print(result_str)
+        self.post_output(result_str)
+
+    def get_input(self, sheet_name) -> tuple[FractionalAllocation, set]:
         """
         Fetches the input sheet from the spreadsheet, converts it to a Pandas
         dataframe and iterates over the data in order to create all
@@ -32,7 +48,7 @@ class GSpreadParetoImprovement:
 
         :return: FractionalAllocation of the input sheet content and an item set
         """
-        i_sheet = self.spreadsheet.worksheet("Input")
+        i_sheet = self.spreadsheet.worksheet(sheet_name)
         df = pd.DataFrame(i_sheet.get_all_records())
         items_list = [col.split('-')[0] for col in df if 'valuation' in col]
         items = set(items_list)
@@ -64,5 +80,8 @@ class GSpreadParetoImprovement:
 
 if __name__ == "__main__":
     gpi = GSpreadParetoImprovement()
-    gpi.solve()
+    gpi.solve('Input')
+    import doctest
+    (failures, tests) = doctest.testmod(report=True)
+    print("{} failures, {} tests".format(failures, tests))
 
