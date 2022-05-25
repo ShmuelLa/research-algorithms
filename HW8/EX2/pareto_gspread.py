@@ -1,49 +1,68 @@
 import gspread
-import networkx as nx
 import pandas as pd
 from fairpy.agents import AdditiveAgent
 from fairpy.items.allocations_fractional import FractionalAllocation
 from fairpy.items.pareto_improvement import ParetoImprovement
 
 
-def get_input():
-    account = gspread.service_account("creds.json")
-    spreadsheet = account.open_by_key('1BdSeJ0uOmnJijWa460BmgyjAKBpVFiQ-6QONHN3Ip4U')
+class GSpreadParetoImprovement:
 
-    sheet = spreadsheet.worksheet("Input")
-    df = pd.DataFrame(sheet.get_all_records())
+    def __init__(self):
+        """
+        Initializes the pareto improvement Google spreadsheet solver
+        sets the service account and test worksheet we previously configured
+        """
+        self.account = account = gspread.service_account("creds.json")
+        self.spreadsheet = account.open_by_key('1BdSeJ0uOmnJijWa460BmgyjAKBpVFiQ-6QONHN3Ip4U')
 
-    items_list = [col.split('-')[0] for col in df if 'valuation' in col]
-    items = set(items_list)
-    agent_names = df['name'].tolist()
+    def solve(self):
+        """
+        Solved the problem presented on the input sheet
+        by using all the relevant class methods
+        """
+        fr_allocation, items = self.get_input()
+        self.post_output(str(ParetoImprovement(fr_allocation, items).find_pareto_improvement()))
 
-    agents_list = []
-    agents_allocation_list = []
-    for agent_name in agent_names:
-        agent_valuation_dict = {}
-        agent_allocation_dict = {}
-        for x in df.itertuples():
-            if x[1] == agent_name:
-                for item_i in range(len(items)):
-                    agent_valuation_dict[items_list[item_i]] = x[item_i + 2]
-                    agent_allocation_dict[items_list[item_i]] = float(x[item_i + 2 + 1 + len(items)])
-        agents_list.append(AdditiveAgent(agent_valuation_dict, name=agent_name))
-        agents_allocation_list.append(agent_allocation_dict)
+    def get_input(self) -> tuple[FractionalAllocation, set]:
+        """
+        Fetches the input sheet from the spreadsheet, converts it to a Pandas
+        dataframe and iterates over the data in order to create all
+        the different object for the ParetoImprovement and FractionalAlLocation
+        settings
 
-    fr_allocation = FractionalAllocation(agents_list, agents_allocation_list)
-    return fr_allocation, items
+        :return: FractionalAllocation of the input sheet content and an item set
+        """
+        i_sheet = self.spreadsheet.worksheet("Input")
+        df = pd.DataFrame(i_sheet.get_all_records())
+        items_list = [col.split('-')[0] for col in df if 'valuation' in col]
+        items = set(items_list)
+        agent_names = df['name'].tolist()
+        agents_list = []
+        agents_allocation_list = []
+        for agent_name in agent_names:
+            agent_valuation_dict = {}
+            agent_allocation_dict = {}
+            for x in df.itertuples():
+                if x[1] == agent_name:
+                    for item_i in range(len(items)):
+                        agent_valuation_dict[items_list[item_i]] = x[item_i + 2]
+                        agent_allocation_dict[items_list[item_i]] = float(x[item_i + 2 + 1 + len(items)])
+            agents_list.append(AdditiveAgent(agent_valuation_dict, name=agent_name))
+            agents_allocation_list.append(agent_allocation_dict)
+        fr_allocation = FractionalAllocation(agents_list, agents_allocation_list)
+        return fr_allocation, items
 
+    def post_output(self, output: str):
+        """
+        Posts the resulting output as string in the output sheet
 
-def post_output(output: str):
-    account = gspread.service_account("creds.json")
-    spreadsheet = account.open_by_key('1BdSeJ0uOmnJijWa460BmgyjAKBpVFiQ-6QONHN3Ip4U')
-
-    sheet = spreadsheet.worksheet("Output")
-    sheet.update('A1', str(output))
+        :param output: The pareto improvement algorithm output for the relevant input
+        """
+        o_sheet = self.spreadsheet.worksheet("Output")
+        o_sheet.update('A1', str(output))
 
 
 if __name__ == "__main__":
-    initial_allocation, all_items = get_input()
-    pi = ParetoImprovement(initial_allocation, all_items)
-    post_output(pi.find_pareto_improvement())
+    gpi = GSpreadParetoImprovement()
+    gpi.solve()
 
