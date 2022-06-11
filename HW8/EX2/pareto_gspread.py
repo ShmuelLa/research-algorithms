@@ -90,7 +90,7 @@ class GSpreadParetoImprovement:
 if __name__ == "__main__":
     gpi = GSpreadParetoImprovement()
     gpi.solve('Input')
-    import doctest
-    (failures, tests) = doctest.testmod(report=True)
-    print("{} failures, {} tests".format(failures, tests))
+    # import doctest
+    # (failures, tests) = doctest.testmod(report=True)
+    # print("{} failures, {} tests".format(failures, tests))
 
