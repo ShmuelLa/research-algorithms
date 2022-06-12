@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+    {% block content %}
+    <form method="POST">
+        {% for agent in range(agents) %}
+            <label>Agent {{agent+1}}</label>
+            {% for object in range(objects) %}
+                <div class="form-group">
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="ag_input"
+                      name="ag_input"
+                      placeholder="Agent {{agent+1}} object {{object}} allocation between 0.0 to 1.0"
+                    />
+                </div>
+                <br><br>
+            {% endfor %}
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    {% endblock %}

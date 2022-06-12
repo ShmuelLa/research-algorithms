@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+    {% block content %}
+    <form method="POST">
+        {% for in in input.split(',') %}
+            <h3>{{in}}</h3>
+        {% endfor %}
+    </form>
+    {% endblock %}
